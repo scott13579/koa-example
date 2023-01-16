@@ -25,7 +25,7 @@ app.use(router.allowedMethods());
 // EJS 템플릿엔진
 render(app, {
     //layout: false,
-    layout: 'layout/web',
+    layout: 'layouts/web',
     root: path.join(__dirname, '/views'),
     viewExt: 'ejs', cache: false,
     cache: false
