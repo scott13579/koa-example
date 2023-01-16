@@ -1,12 +1,16 @@
 const Router = require('@koa/router');
 const router = new Router();
 
+const { myLogging } = require('./middleware/logging');
+
 const webController = require('./web/controller');
 const apiUserController = require('./api/user/controller');
 const apiFeedController = require('./api/feed/controller');
 
-router.get('/',webController.home);
-router.get('/page/:name',webController.page);
+router.use(myLogging);
+
+router.get('/', webController.home);
+router.get('/page/:page', webController.page);
 
 router.get('/api/user/:id', apiUserController.info);
 
