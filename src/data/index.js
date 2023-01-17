@@ -8,7 +8,7 @@ exports.connection = mysql.createPool(
     {
         host : process.env.DB_HOST,
         user : process.env.DB_USERNAME,
-        password : process.enc.DB_PASSWORD,
+        password : process.env.DB_PASSWORD,
         database : process.env.DB_DATABASE,
         waitForConnections : true,
         connectionLimit : 10,
@@ -22,10 +22,10 @@ exports.connection = mysql.createPool(
  * @param {array} params 쿼리 ? 에 들어갈 파라미터들
  * @returns 
  */
-exports.pool = (queryString, params) =>{
-    return new Promise((resolve, reject) =>{
+exports.pool = (queryString, params) => {
+    return new Promise((resolve, reject) => {
         this.connection.query(queryString, params, (err, row, fields) => {
-            (err) ? reject(err) : resolve(rows);
+            (err) ? reject(err) : resolve(row);
         });
-    });
+    })
 }
