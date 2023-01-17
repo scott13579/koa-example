@@ -1,16 +1,23 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'my-secret-key';
+const { register } = require('./query');
 
 exports.info = (ctx, next) => {
-    // let id = ctx.params.id;
-    // ctx.body = `${id} 회원에 대한 정보`;
+    let id = ctx.params.id;
+    ctx.body = `${id} 회원에 대한 정보`;
 }
 
 exports.register = async (ctx, next) => {
     // 회원가입 처리 모듈
+    let { email, password, name} = ctx.request.body;
 
-    // let token = await generateToken({name : 'my-name'});
-    // ctx.body = token;
+    let { affectedRows } = await register(email, password, name);
+    
+    if (affectedRows > 0) {
+        let token = await generateToken({name});
+        ctx.body = token;
+    } else {
+        ctx.body = {result : "fail"};
+    }
 }
 
 exports.login = async (ctx, next) => {
