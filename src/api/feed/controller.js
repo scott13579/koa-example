@@ -1,4 +1,6 @@
-const { isNewFeed } = require('../../common/formatter/date');
+//const { isNewFeed } = require('../../common/formatter/date');
+const { store } = require('./query');
+// const { upload } = require('../file/query');
 
 /** 전체 피드 보기 */
 exports.index = (ctx, next) => {
@@ -17,10 +19,13 @@ exports.index = (ctx, next) => {
 }
 
 /** 새 피드 작성 처리 */
-exports.store = (ctx, next) => {
-    let body = ctx.request.body
-    ctx.body = body;
-    //ctx.body = `피드 작성 완료`;
+exports.store =  async (ctx, next) => {
+
+    let { user_id, image_id, content } = ctx.request.body;
+
+    let item =  await store(user_id, image_id, content);
+
+    
 }
 
 /** 피드 상세 보기 */

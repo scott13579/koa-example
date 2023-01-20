@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { register } = require('./query');
+const { register, login } = require('./query');
+const crypto = require('crypto');
 
 exports.info = (ctx, next) => {
     let id = ctx.params.id;
@@ -9,9 +10,10 @@ exports.info = (ctx, next) => {
 exports.register = async (ctx, next) => {
     // 회원가입 처리 모듈
     let { email, password, name} = ctx.request.body;
+    let result = await crypto.pbkdf2Sync(password, process.env.APP_KEY, 50, 100, 'sha512');
+    console.log(email, password, name);
+    let { affectedRows } = await register(email, result.toString('base64'), name);
 
-    let { affectedRows } = await register(email, password, name);
-    
     if (affectedRows > 0) {
         let token = await generateToken({name});
         ctx.body = token;
@@ -22,19 +24,17 @@ exports.register = async (ctx, next) => {
 
 exports.login = async (ctx, next) => {
     // 로그인 모듈
-    // let id = ctx.request.body;
-    // let pw = ctx.request.body;
-    let { id, pw } = ctx.request.body;
-    let result = "";
+    let { email, password } = ctx.request.body;
+    let result = await crypto.pbkdf2Sync(password, process.env.APP_KEY, 50, 100, 'sha512');
     
-    if (id === 'admin' && pw === '1234') {  // 계정이 있는 경우 토큰 발급
-        result = await generateToken({name : 'my-name'});
+    let item = await login(email, result.toString('base64'));
+
+    if (item == null) {
+        ctx.body = {result: "fail"};
+    } else {
+        let token = await generateToken({name: item.name, id : item.id});
+        ctx.body = token;
     }
-    else {  // 계정이 틀린 경우
-        result = "아이디 혹은 패스워드가 올바르지 않습니다.";
-    }
-    //let token = await generateToken({name : 'my-name'});
-    ctx.body = result;
 }
 
 let generateToken = (payload) => {
