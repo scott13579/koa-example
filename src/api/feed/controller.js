@@ -21,11 +21,16 @@ exports.index = (ctx, next) => {
 /** 새 피드 작성 처리 */
 exports.store =  async (ctx, next) => {
 
-    let { user_id, image_id, content } = ctx.request.body;
+    let { image_id, content } = ctx.request.body;
+    let user = ctx.request.user; //  decoded : 유저에 대한 모든 정보가 담겨 있음.
 
-    let item =  await store(user_id, image_id, content);
+    let item =  await store(user.id, image_id, content);
 
-    
+    if (item == null){
+        ctx.body = "에러";
+    } else {
+        ctx.body = "성공";
+    }
 }
 
 /** 피드 상세 보기 */

@@ -11,11 +11,11 @@ exports.register = async (ctx, next) => {
     // 회원가입 처리 모듈
     let { email, password, name} = ctx.request.body;
     let result = await crypto.pbkdf2Sync(password, process.env.APP_KEY, 50, 100, 'sha512');
-    console.log(email, password, name);
-    let { affectedRows } = await register(email, result.toString('base64'), name);
+
+    let { affectedRows, insertId } = await register(email, result.toString('base64'), name);
 
     if (affectedRows > 0) {
-        let token = await generateToken({name});
+        let token = await generateToken({name, id : insertId});
         ctx.body = token;
     } else {
         ctx.body = {result : "fail"};

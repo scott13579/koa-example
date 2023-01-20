@@ -8,6 +8,7 @@ exports.verify = async (ctx, next) => {
             ctx.body = `에러`;
             return;
         }
+        ctx.request.user = decoded;
         await next();
     })
 }
