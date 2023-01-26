@@ -3,8 +3,7 @@
  * 출력해주는 로그 함수 
  */
 exports.myLogging = async (ctx, next) => {
-    let clientIP = ctx.request.ip;
-    let URL = ctx.originalUrl;
-    console.log(`${clientIP.replace("::ffff:","")} 주소에서 요청 : ${URL}`);
+    let clientIp = ctx.request.ip;
+    console.log(`${clientIp.replace("::ffff:","")} 주소에서 요청 :  ${ctx.originalUrl}`);
     await next();
-}
+  }
